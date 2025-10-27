@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { generatePrediction } from './services/geminiService';
 import type { PredictionResult, HistoryItem } from './types';
-import Header from './components/Header';
+import Header from './Header';
 import ControlPanel from './components/ControlPanel';
 import PredictionDisplay from './components/PredictionDisplay';
 import LoadingSpinner from './components/LoadingSpinner';
