@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { generatePrediction } from './services/geminiService';
 import type { PredictionResult, HistoryItem } from './types';
@@ -40,7 +39,6 @@ const App: React.FC = () => {
     }
   }, [predictionHistory]);
 
-
   const handleGenerate = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -59,7 +57,8 @@ const App: React.FC = () => {
 
     } catch (err) {
       console.error(err);
-      setError('Gagal menghasilkan prediksi. Mungkin ada masalah dengan koneksi atau API. Silakan coba lagi nanti.');
+      const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan tidak diketahui.';
+      setError(`Gagal: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }

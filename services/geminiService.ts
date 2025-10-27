@@ -1,10 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { LotteryType, PredictionResult } from '../types';
 
-// According to guidelines, API key must be from process.env.API_KEY
-// The exclamation mark asserts that the value is not null or undefined.
-// This is safe assuming the environment is set up as per the guidelines.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+// WARNING: API Key is hardcoded. This is not a secure practice for production applications.
+const API_KEY = "AIzaSyDdVMVSj5ZFGtpm9gJ2GATOp-sjwqIBfA4";
+const ai = new GoogleGenAI({ apiKey: API_KEY });
+
 
 // Schema for the JSON response from the Gemini API.
 const predictionSchema = {
@@ -77,16 +77,15 @@ Instruksi:
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-pro', // Using a powerful model for better reasoning and pattern recognition.
+      model: 'gemini-2.5-pro',
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
         responseSchema: predictionSchema,
-        temperature: 1, // Higher temperature for more "creative" and less deterministic number generation.
+        temperature: 1,
       },
     });
 
-    // The response is expected to be a clean JSON string due to responseMimeType and responseSchema.
     const textResponse = response.text;
     const jsonResult = JSON.parse(textResponse);
 
@@ -94,7 +93,6 @@ Instruksi:
 
   } catch (error) {
     console.error("Error generating prediction from Gemini:", error);
-    // Propagate a user-friendly error to be handled by the UI.
-    throw new Error("Failed to get prediction from AI service.");
+    throw new Error("Gagal mendapatkan prediksi dari layanan AI. Periksa koneksi internet atau coba lagi nanti.");
   }
 };
