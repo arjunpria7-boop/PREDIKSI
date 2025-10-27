@@ -79,14 +79,14 @@ const PredictionDisplay: React.FC<PredictionDisplayProps> = ({ result, market })
   const textToCopy = `${formatMarketName(market)}
 ${specialFormattedDate}
 
-𝘼𝙄 : ${result.ai}
-𝘾𝙉 : ${result.cn}
-𝘾𝘽 : ${result.cb}
-𝘽𝘽𝙁𝙎 : ${result.bbfs}
-4𝘿𝙗𝙗 : ${result.bb4d.join(' * ')}
-3𝘿𝙗𝙗 : ${result.bb3d.join(' * ')}
-2𝘿 : ${result.bb2d.join(' * ')}
-𝚌𝚊𝚍𝚊𝚗𝚐𝚊𝚗 : ${result.bb2dCadangan.join(' * ')}
+𝘼𝙄 : ${result.ai || '-'}
+𝘾𝙉 : ${result.cn || '-'}
+𝘾𝘽 : ${result.cb || '-'}
+𝘽𝘽𝙁𝙎 : ${result.bbfs || '-'}
+4𝘿𝙗𝙗 : ${(result.bb4d || []).join(' * ')}
+3𝘿𝙗𝙗 : ${(result.bb3d || []).join(' * ')}
+2𝘿 : ${(result.bb2d || []).join(' * ')}
+𝚌𝚊𝚍𝚊𝚗𝚐𝚊𝚗 : ${(result.bb2dCadangan || []).join(' * ')}
 
 ʲᵃᵈⁱᵏᵃⁿ ᵖᵉʳᵇᵃⁿᵈⁱⁿᵍᵃⁿ- ᵗⁱᵈᵃᵏ ᵃᵈᵃ ʲᵃᵐⁱⁿᵃⁿ ᴶᴾ ¹⁰⁰%
 
@@ -116,24 +116,24 @@ Salam dari 𝗠𝗮𝘀 𝗔𝗥𝗝`;
       </h2>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <PredictionCategory title="AI" className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>{result.ai}</PredictionCategory>
-        <PredictionCategory title="CB" className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>{result.cb}</PredictionCategory>
-        <PredictionCategory title="CN" className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>{result.cn}</PredictionCategory>
-        <PredictionCategory title="BBFS" className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>{result.bbfs}</PredictionCategory>
+        <PredictionCategory title="AI" className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>{result.ai || '-'}</PredictionCategory>
+        <PredictionCategory title="CB" className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>{result.cb || '-'}</PredictionCategory>
+        <PredictionCategory title="CN" className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>{result.cn || '-'}</PredictionCategory>
+        <PredictionCategory title="BBFS" className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>{result.bbfs || '-'}</PredictionCategory>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-slate-700/50 rounded-lg p-4 text-center animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
            <h3 className="text-sm font-semibold text-emerald-400 uppercase tracking-wider mb-3">4D BB</h3>
-           <NumberGrid numbers={result.bb4d} />
+           <NumberGrid numbers={result.bb4d || []} />
         </div>
         <div className="bg-slate-700/50 rounded-lg p-4 text-center animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
            <h3 className="text-sm font-semibold text-emerald-400 uppercase tracking-wider mb-3">3D BB</h3>
-           <NumberGrid numbers={result.bb3d} />
+           <NumberGrid numbers={result.bb3d || []} />
         </div>
          <div className="bg-slate-700/50 rounded-lg p-4 text-center animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
            <h3 className="text-sm font-semibold text-emerald-400 uppercase tracking-wider mb-3">2D</h3>
-           <NumberGrid numbers={result.bb2d} />
+           <NumberGrid numbers={result.bb2d || []} />
            {result.bb2dCadangan && result.bb2dCadangan.length > 0 && (
             <>
               <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-4 mb-2 pt-3 border-t border-slate-600">
@@ -173,21 +173,21 @@ Salam dari 𝗠𝗮𝘀 𝗔𝗥𝗝`;
           {specialFormattedDate}
           <br />
           <br />
-          𝘼𝙄 : {result.ai}
+          𝘼𝙄 : {result.ai || '-'}
           <br />
-          𝘾𝙉 : {result.cn}
+          𝘾𝙉 : {result.cn || '-'}
           <br />
-          𝘾𝘽 : {result.cb}
+          𝘾𝘽 : {result.cb || '-'}
           <br />
-          𝘽𝘽𝙁𝙎 : {result.bbfs}
+          𝘽𝘽𝙁𝙎 : {result.bbfs || '-'}
           <br />
-          4𝘿𝙗𝙗 : {result.bb4d.join(' * ')}
+          4𝘿𝙗𝙗 : {(result.bb4d || []).join(' * ')}
           <br />
-          3𝘿𝙗𝙗 : {result.bb3d.join(' * ')}
+          3𝘿𝙗𝙗 : {(result.bb3d || []).join(' * ')}
           <br />
-          2𝘿 : {result.bb2d.join(' * ')}
+          2𝘿 : {(result.bb2d || []).join(' * ')}
           <br />
-          𝚌𝚊𝚍𝚊𝚗𝚐𝚊𝚗 : {result.bb2dCadangan.join(' * ')}
+          𝚌𝚊𝚍𝚊𝚗𝚐𝚊𝚗 : ${(result.bb2dCadangan || []).join(' * ')}
           <br />
           <br />
           ʲᵃᵈⁱᵏᵃⁿ ᵖᵉʳᵇᵃⁿᵈⁱⁿᵍᵃⁿ- ᵗⁱᵈᵃᵏ ᵃᵈᵃ ʲᵃᵐⁱⁿᵃⁿ ᴶᴾ ¹⁰⁰%

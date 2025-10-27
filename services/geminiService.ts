@@ -16,39 +16,38 @@ export const generatePrediction = async (
   lastResult: string[]
 ): Promise<PredictionResult> => {
   // Dynamically import the SDK only when the function is called.
-  // This is the definitive fix to prevent blank screens on deployment.
-  const { GoogleGenAI, Type } = await import('@google/genai');
+  const { GoogleGenAI } = await import('@google/genai');
   
   // Initialize the AI client here to prevent crashes on app startup.
   const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-  // Schema is defined inside the function to prevent top-level module errors
-  // during initialization, which can cause a blank screen on deployment.
+  // Schema is defined inside the function using literal strings instead of the Type enum
+  // to prevent top-level module errors and increase compatibility with serverless environments.
   const predictionSchema = {
-    type: Type.OBJECT,
+    type: "OBJECT",
     properties: {
-      ai: { type: Type.STRING, description: 'Angka Ikut: 2-4 digit angka yang kemungkinan besar akan muncul.' },
-      cb: { type: Type.STRING, description: 'Colok Bebas: 1 atau 2 digit angka yang diprediksi akan muncul di posisi mana saja.' },
-      cn: { type: Type.STRING, description: 'Colok Naga: 3 digit angka yang diprediksi akan muncul di posisi mana saja.' },
-      bbfs: { type: Type.STRING, description: 'Bolak Balik Full Set: 5-7 digit angka untuk kombinasi.' },
+      ai: { type: "STRING", description: 'Angka Ikut: 2-4 digit angka yang kemungkinan besar akan muncul.' },
+      cb: { type: "STRING", description: 'Colok Bebas: 1 atau 2 digit angka yang diprediksi akan muncul di posisi mana saja.' },
+      cn: { type: "STRING", description: 'Colok Naga: 3 digit angka yang diprediksi akan muncul di posisi mana saja.' },
+      bbfs: { type: "STRING", description: 'Bolak Balik Full Set: 5-7 digit angka untuk kombinasi.' },
       bb4d: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
+        type: "ARRAY",
+        items: { type: "STRING" },
         description: '4 set angka 4D bolak-balik. Setiap angka harus 4 digit.'
       },
       bb3d: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
+        type: "ARRAY",
+        items: { type: "STRING" },
         description: '5 set angka 3D bolak-balik. Setiap angka harus 3 digit.'
       },
       bb2d: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
+        type: "ARRAY",
+        items: { type: "STRING" },
         description: '5 set angka 2D. Setiap angka harus 2 digit.'
       },
       bb2dCadangan: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
+        type: "ARRAY",
+        items: { type: "STRING" },
         description: '2 set angka 2D cadangan. Setiap angka harus 2 digit.'
       },
     },
