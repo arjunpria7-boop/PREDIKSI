@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface ErrorMessageProps {
@@ -8,8 +7,8 @@ interface ErrorMessageProps {
 const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   return (
     <div className="bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg relative text-center" role="alert">
-      <strong className="font-bold block mb-1"><i className="fa-solid fa-circle-exclamation mr-2"></i> Terjadi Kesalahan!</strong>
-      <span>{message}</span>
+      <strong className="font-bold block"><i className="fa-solid fa-circle-exclamation mr-2"></i> Terjadi Kesalahan!</strong>
+      <span className="block mt-1 text-sm">{message}</span>
     </div>
   );
 };
