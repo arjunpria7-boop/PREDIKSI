@@ -14,8 +14,9 @@ export const generatePrediction = async (
   lastResult: string[],
   apiKey: string
 ): Promise<PredictionResult> => {
-  // Dynamically import the SDK only when the function is called.
-  const { GoogleGenAI } = await import('@google/genai');
+  // Access the GoogleGenAI class from the global window object loaded via CDN
+  // This replaces the dynamic import() for better browser compatibility.
+  const { GoogleGenAI } = (window as any).google.ai;
   
   // Initialize the AI client here to prevent crashes on app startup.
   const ai = new GoogleGenAI({ apiKey });
