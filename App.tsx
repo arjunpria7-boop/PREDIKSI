@@ -9,6 +9,7 @@ import ErrorMessage from './components/ErrorMessage';
 import Disclaimer from './components/Disclaimer';
 import HistoryPanel from './components/HistoryPanel';
 import Modal from './components/Modal';
+import ApiKeyForm from './components/ApiKeyForm';
 
 const App: React.FC = () => {
   const [market, setMarket] = useState<string>('HONGKONG');
@@ -19,15 +20,21 @@ const App: React.FC = () => {
   
   const [predictionHistory, setPredictionHistory] = useState<HistoryItem[]>([]);
   const [selectedHistory, setSelectedHistory] = useState<HistoryItem | null>(null);
+  const [apiKey, setApiKey] = useState<string | null>(null);
 
   useEffect(() => {
     try {
+      const storedApiKey = localStorage.getItem('gemini_api_key');
+      if (storedApiKey) {
+        setApiKey(storedApiKey);
+      }
+
       const storedHistory = localStorage.getItem('predictionHistory');
       if (storedHistory) {
         setPredictionHistory(JSON.parse(storedHistory));
       }
     } catch (e) {
-      console.error("Failed to load history from localStorage", e);
+      console.error("Failed to load data from localStorage", e);
     }
   }, []);
 
@@ -39,13 +46,38 @@ const App: React.FC = () => {
     }
   }, [predictionHistory]);
 
+  const handleSaveApiKey = (key: string) => {
+    try {
+      localStorage.setItem('gemini_api_key', key);
+      setApiKey(key);
+    } catch (e) {
+      console.error("Failed to save API key to localStorage", e);
+      setError("Gagal menyimpan API Key. Penyimpanan lokal mungkin penuh atau tidak didukung.");
+    }
+  };
+
+  const handleClearApiKey = () => {
+    try {
+      localStorage.removeItem('gemini_api_key');
+      setApiKey(null);
+    } catch (e) {
+      console.error("Failed to clear API key from localStorage", e);
+    }
+  };
+
   const handleGenerate = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     setPrediction(null);
 
+    if (!apiKey) {
+      setError('API Key tidak ditemukan. Silakan atur terlebih dahulu.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const result = await generatePrediction('4D', market, lastResult);
+      const result = await generatePrediction('4D', market, lastResult, apiKey);
       setPrediction(result);
       
       const newHistoryItem: HistoryItem = {
@@ -62,7 +94,7 @@ const App: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [market, lastResult]);
+  }, [market, lastResult, apiKey]);
 
   const handleViewHistory = (item: HistoryItem) => {
     setSelectedHistory(item);
@@ -74,6 +106,9 @@ const App: React.FC = () => {
       }
   };
 
+  if (!apiKey) {
+    return <ApiKeyForm onSave={handleSaveApiKey} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 font-sans flex flex-col items-center p-4 sm:p-6 lg:p-8">
@@ -105,7 +140,7 @@ const App: React.FC = () => {
             />
           )}
         </main>
-        <Disclaimer />
+        <Disclaimer onClearApiKey={handleClearApiKey} />
       </div>
 
       {selectedHistory && (

@@ -1,25 +1,24 @@
 import type { LotteryType, PredictionResult } from '../types';
 
-// WARNING: API Key is hardcoded. This is not a secure practice for production applications.
-const API_KEY = "AIzaSyDdVMVSj5ZFGtpm9gJ2GATOp-sjwqIBfA4";
-
 /**
  * Generates a lottery prediction using the Gemini API.
  * @param lotteryType - The type of lottery (e.g., '4D').
  * @param market - The lottery market (e.g., 'HONGKONG').
  * @param lastResult - An array of the last 4 digits.
+ * @param apiKey - The user's Google AI API key.
  * @returns A promise that resolves to a PredictionResult object.
  */
 export const generatePrediction = async (
   lotteryType: LotteryType,
   market: string,
-  lastResult: string[]
+  lastResult: string[],
+  apiKey: string
 ): Promise<PredictionResult> => {
   // Dynamically import the SDK only when the function is called.
   const { GoogleGenAI } = await import('@google/genai');
   
   // Initialize the AI client here to prevent crashes on app startup.
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  const ai = new GoogleGenAI({ apiKey });
 
   // Schema is defined inside the function using literal strings instead of the Type enum
   // to prevent top-level module errors and increase compatibility with serverless environments.
