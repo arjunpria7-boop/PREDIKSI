@@ -7,7 +7,6 @@ const Header: React.FC = () => {
         <i className="fa-solid fa-brain mr-3"></i>
         Rumus Mas ARJ
       </h1>
-      <p className="text-slate-400 mt-2 text-lg">Analisis Cerdas untuk Angka Keberuntungan Anda</p>
     </header>
   );
 };

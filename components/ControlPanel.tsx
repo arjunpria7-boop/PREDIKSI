@@ -8,6 +8,7 @@ interface ControlPanelProps {
   isLoading: boolean;
   lastResult: string[];
   onLastResultChange: (value: string[]) => void;
+  isApiKeySet: boolean;
 }
 
 const MARKETS: string[] = [
@@ -31,6 +32,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   isLoading,
   lastResult,
   onLastResultChange,
+  isApiKeySet,
 }) => {
   
   const handleReset = () => {
@@ -79,7 +81,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
       <button
         onClick={onGenerate}
-        disabled={isLoading}
+        disabled={isLoading || !isApiKeySet}
+        title={!isApiKeySet ? "Silakan masukkan API Key Anda terlebih dahulu" : "Hasilkan Prediksi"}
         className="w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-4 text-lg font-bold text-white bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full shadow-lg hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-4"
       >
         {isLoading ? (

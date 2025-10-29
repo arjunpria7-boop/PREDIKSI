@@ -9,7 +9,6 @@ import ErrorMessage from './components/ErrorMessage';
 import Disclaimer from './components/Disclaimer';
 import HistoryPanel from './components/HistoryPanel';
 import Modal from './components/Modal';
-import ApiKeyForm from './components/ApiKeyForm';
 
 const App: React.FC = () => {
   const [market, setMarket] = useState<string>('HONGKONG');
@@ -55,7 +54,7 @@ const App: React.FC = () => {
       setError("Gagal menyimpan API Key. Penyimpanan lokal mungkin penuh atau tidak didukung.");
     }
   };
-
+  
   const handleClearApiKey = () => {
     try {
       localStorage.removeItem('gemini_api_key');
@@ -64,18 +63,28 @@ const App: React.FC = () => {
       console.error("Failed to clear API key from localStorage", e);
     }
   };
+  
+  const handleManageApiKey = () => {
+    const key = window.prompt("Masukkan Google AI API Key Anda. Kosongkan untuk menghapus key yang ada.");
+    if (key !== null) { // User didn't click cancel
+        if (key.trim() === '') {
+            handleClearApiKey();
+        } else {
+            handleSaveApiKey(key.trim());
+        }
+    }
+  };
 
   const handleGenerate = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    setPrediction(null);
-
     if (!apiKey) {
-      setError('API Key tidak ditemukan. Silakan atur terlebih dahulu.');
-      setIsLoading(false);
+      setError('API Key tidak ditemukan. Silakan atur melalui ikon kunci di bawah.');
       return;
     }
 
+    setIsLoading(true);
+    setError(null);
+    setPrediction(null);
+    
     try {
       const result = await generatePrediction('4D', market, lastResult, apiKey);
       setPrediction(result);
@@ -106,10 +115,6 @@ const App: React.FC = () => {
       }
   };
 
-  if (!apiKey) {
-    return <ApiKeyForm onSave={handleSaveApiKey} />;
-  }
-
   return (
     <div className="min-h-screen bg-slate-900 font-sans flex flex-col items-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-2xl mx-auto">
@@ -123,6 +128,7 @@ const App: React.FC = () => {
               isLoading={isLoading}
               lastResult={lastResult}
               onLastResultChange={setLastResult}
+              isApiKeySet={!!apiKey}
             />
           </div>
 
@@ -140,7 +146,7 @@ const App: React.FC = () => {
             />
           )}
         </main>
-        <Disclaimer onClearApiKey={handleClearApiKey} />
+        <Disclaimer onManageApiKey={handleManageApiKey} isApiKeySet={!!apiKey} />
       </div>
 
       {selectedHistory && (
