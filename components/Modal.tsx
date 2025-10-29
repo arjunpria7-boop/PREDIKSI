@@ -1,61 +1,41 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface ModalProps {
+  isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
-  useEffect(() => {
-    const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
-
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, [onClose]);
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
 
   return (
     <div 
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 p-4 animate-fade-in"
-        onClick={onClose}
-        aria-modal="true"
-        role="dialog"
+      className="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4 animate-fade-in-fast"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
     >
       <div 
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 relative animate-slide-in-up"
-        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6 border border-slate-700 relative"
+        onClick={e => e.stopPropagation()} // Prevent closing modal when clicking inside
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors z-10 w-8 h-8 flex items-center justify-center"
+          className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
           aria-label="Tutup modal"
         >
-          <i className="fa-solid fa-xmark fa-2x"></i>
+          <i className="fa-solid fa-times text-2xl"></i>
         </button>
-        <div className="p-2 sm:p-4 md:p-6">
-            {children}
-        </div>
+        {children}
       </div>
-      <style>{`
-        @keyframes fade-in {
+       <style>{`
+        @keyframes fade-in-fast {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        @keyframes slide-in-up {
-            from { transform: translateY(20px) scale(0.98); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        .animate-fade-in {
-            animation: fade-in 0.2s ease-out forwards;
-        }
-        .animate-slide-in-up {
-            animation: slide-in-up 0.3s ease-out forwards;
+        .animate-fade-in-fast {
+            animation: fade-in-fast 0.2s ease-out forwards;
         }
       `}</style>
     </div>

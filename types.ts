@@ -1,4 +1,3 @@
-
 export type LotteryType = '2D' | '3D' | '4D';
 
 export interface PredictionResult {
@@ -10,10 +9,4 @@ export interface PredictionResult {
   bb3d: string[]; // 3D Bolak Balik (5 sets)
   bb2d: string[]; // 2D (5 sets)
   bb2dCadangan: string[]; // 2D Cadangan (2 sets)
-}
-
-export interface HistoryItem {
-  market: string;
-  prediction: PredictionResult;
-  date: string; // ISO string format
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LotteryType } from '../types';
 import HistoryInput from './HistoryInput';
 
 interface ControlPanelProps {
@@ -8,12 +9,11 @@ interface ControlPanelProps {
   isLoading: boolean;
   lastResult: string[];
   onLastResultChange: (value: string[]) => void;
-  isApiKeySet: boolean;
 }
 
 const MARKETS: string[] = [
-  "HONGKONG", "CAMBODIA", "CHINA", "SINGAPORE", "SYDNEY", "TAIWAN", 
-  "TOTO MACAU 00", "TOTO MACAU 13", "TOTO MACAU 16", "TOTO MACAU 19", "TOTO MACAU 22",
+  "HONGKONG", "CAMBODIA", "CHINA", "SINGAPORE", "SYDNEY", "TAIwan", 
+  "TOTO MACAU 00", "TOTO MACAU 13", "TOTO MACAU 16", "TOTO MACAU 19", "TOTO MACAU 22", "TOTO MACAU 23",
   "SYDNEY LOTTO", "HONGKONG LOTTO", "GERMANI PLUS", "KENTUCY MID", "TEXAS DAY", "NEW YORK MID", 
   "CAROLINA DAY", "CHICAGO LOTTERY", "OREGON 01", "GANGNAM", "BERLIN LOTTERY", "NAMDONG", 
   "TEXAS EVENING", "OREGON 04", "QATAR MORNING", "GWANSAN POOLS", "YORDANIA", "CALIFORNIA", 
@@ -32,7 +32,6 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   isLoading,
   lastResult,
   onLastResultChange,
-  isApiKeySet,
 }) => {
   
   const handleReset = () => {
@@ -81,8 +80,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
       <button
         onClick={onGenerate}
-        disabled={isLoading || !isApiKeySet}
-        title={!isApiKeySet ? "Silakan masukkan API Key Anda terlebih dahulu" : "Hasilkan Prediksi"}
+        disabled={isLoading}
         className="w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-4 text-lg font-bold text-white bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full shadow-lg hover:from-emerald-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-4"
       >
         {isLoading ? (

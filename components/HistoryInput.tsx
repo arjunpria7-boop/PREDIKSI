@@ -45,6 +45,7 @@ const HistoryInput: React.FC<HistoryInputProps> = ({ value, onChange }) => {
       {value.map((digit, index) => (
         <input
           key={index}
+          // Fix(components/HistoryInput.tsx): The ref callback function should not return a value. Using a block body to ensure a void return.
           ref={(el) => { inputsRef.current[index] = el; }}
           type="text"
           inputMode="numeric"
