@@ -1,4 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
+// FIX: Import DreamResult type to be used in the new interpretDream function.
 import type { LotteryType, PredictionResult, DreamResult } from '../types';
 
 const predictionSchema = {
@@ -30,32 +31,6 @@ const predictionSchema = {
     },
   },
   required: ['ai', 'cb', 'cn', 'bbfs', 'bb4d', 'bb3d', 'bb2d', 'bb2dCadangan'],
-};
-
-const dreamInterpretationSchema = {
-  type: Type.OBJECT,
-  properties: {
-    interpretation: { 
-      type: Type.STRING, 
-      description: 'Interpretasi singkat dan menarik dari mimpi dalam bahasa Indonesia, hubungkan dengan angka-angka yang dihasilkan.' 
-    },
-    numbers_2d: {
-      type: Type.ARRAY,
-      description: 'Array berisi TEPAT 5 angka prediksi 2D yang relevan dengan mimpi.',
-      items: { type: Type.STRING },
-    },
-    numbers_3d: {
-      type: Type.ARRAY,
-      description: 'Array berisi TEPAT 4 angka prediksi 3D yang relevan dengan mimpi.',
-      items: { type: Type.STRING },
-    },
-    numbers_4d: {
-      type: Type.ARRAY,
-      description: 'Array berisi TEPAT 3 angka prediksi 4D yang relevan dengan mimpi.',
-      items: { type: Type.STRING },
-    },
-  },
-  required: ['interpretation', 'numbers_2d', 'numbers_3d', 'numbers_4d'],
 };
 
 const TOGEL_FORMULAS = `
@@ -181,25 +156,53 @@ export const generatePrediction = async (apiKey: string, lotteryType: LotteryTyp
   }
 };
 
-const buildDreamPrompt = (dream: string): string => {
-  return `Anda adalah seorang ahli tafsir mimpi legendaris dari Indonesia yang menguasai ilmu "Erek Erek" dan "Buku Mimpi".
-  Tugas Anda adalah menafsirkan mimpi yang diberikan oleh pengguna dan mengubahnya menjadi angka-angka keberuntungan untuk togel 2D, 3D, and 4D.
-
-  Mimpi Pengguna: "${dream}"
-
-  Lakukan analisis mendalam terhadap simbol-simbol dalam mimpi tersebut. Hubungkan setiap objek, kejadian, atau perasaan dalam mimpi dengan entri yang relevan dalam buku mimpi atau erek-erek.
-
-  Setelah menganalisis, berikan hasil dalam format berikut:
-  1.  **Interpretasi**: Jelaskan makna mimpi secara singkat dan menarik. Kaitkan interpretasi Anda dengan angka-angka yang Anda hasilkan.
-  2.  **Angka 2D**: Berikan TEPAT 5 set angka 2D.
-  3.  **Angka 3D**: Berikan TEPAT 4 set angka 3D.
-  4.  **Angka 4D**: Berikan TEPAT 3 set angka 4D.
-
-  Pastikan hasilnya sesuai dengan format JSON yang diminta. Jangan menambahkan penjelasan di luar format JSON.`;
+// FIX: Add schema, prompt builder, and service function for dream interpretation.
+const dreamSchema = {
+  type: Type.OBJECT,
+  properties: {
+    interpretation: {
+      type: Type.STRING,
+      description: 'Interpretasi singkat dan jelas dari mimpi dalam 1-2 kalimat.',
+    },
+    numbers_4d: {
+      type: Type.ARRAY,
+      description: 'Array berisi TEPAT 3 angka prediksi 4D berdasarkan mimpi.',
+      items: { type: Type.STRING },
+    },
+    numbers_3d: {
+      type: Type.ARRAY,
+      description: 'Array berisi TEPAT 3 angka prediksi 3D berdasarkan mimpi.',
+      items: { type: Type.STRING },
+    },
+    numbers_2d: {
+      type: Type.ARRAY,
+      description: 'Array berisi TEPAT 3 angka prediksi 2D berdasarkan mimpi.',
+      items: { type: Type.STRING },
+    },
+  },
+  required: ['interpretation', 'numbers_4d', 'numbers_3d', 'numbers_2d'],
 };
 
+const buildDreamPrompt = (dream: string): string => {
+  return `Anda adalah seorang ahli tafsir mimpi tradisional (primbon) dari Indonesia yang juga memahami numerologi.
+Tugas Anda adalah menafsirkan mimpi dan mengubahnya menjadi angka-angka keberuntungan.
+
+Mimpi yang harus ditafsirkan: "${dream}"
+
+Lakukan analisis berdasarkan simbol-simbol dalam mimpi tersebut. Kaitkan dengan konsep-konsep dari buku mimpi atau primbon untuk mendapatkan angka-angka yang relevan.
+
+Berikan hasil dalam format berikut:
+1.  **Interpretasi**: Makna singkat dari mimpi tersebut (1-2 kalimat).
+2.  **Angka 4D**: TEPAT 3 kombinasi angka 4D.
+3.  **Angka 3D**: TEPAT 3 kombinasi angka 3D.
+4.  **Angka 2D**: TEPAT 3 kombinasi angka 2D.
+
+Pastikan hasilnya sesuai dengan format JSON yang diminta.`;
+};
+
+
 export const interpretDream = async (apiKey: string, dream: string): Promise<DreamResult> => {
-   if (!apiKey) {
+  if (!apiKey) {
     throw new Error("API Key belum diatur. Silakan atur kunci di menu pengaturan.");
   }
   const ai = new GoogleGenAI({ apiKey });
@@ -210,21 +213,21 @@ export const interpretDream = async (apiKey: string, dream: string): Promise<Dre
       contents: buildDreamPrompt(dream),
       config: {
         responseMimeType: "application/json",
-        responseSchema: dreamInterpretationSchema,
+        responseSchema: dreamSchema,
         temperature: 0.7,
       }
     });
 
     const jsonText = response.text.trim();
     const result = JSON.parse(jsonText);
-    
-    if (!result.interpretation || !result.numbers_2d || !result.numbers_3d || !result.numbers_4d) {
-        throw new Error("Format respons dari AI untuk tafsir mimpi tidak valid.");
+
+    if (!result.interpretation || !result.numbers_4d || !result.numbers_3d || !result.numbers_2d) {
+        throw new Error("Format respons dari AI tidak valid.");
     }
 
     return result as DreamResult;
   } catch (error) {
     console.error("Error calling Gemini API for dream interpretation:", error);
-    throw new Error("Gagal berkomunikasi dengan AI. Periksa API Key Anda atau coba lagi nanti.");
+    throw new Error("Gagal menafsirkan mimpi dengan AI. Periksa API Key Anda atau coba lagi nanti.");
   }
 };

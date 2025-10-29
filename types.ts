@@ -10,10 +10,10 @@ export interface PredictionResult {
   bb2d: string[]; // 2D (5 sets)
   bb2dCadangan: string[]; // 2D Cadangan (2 sets)
 }
-
+// FIX: Add DreamResult interface for dream interpretation feature.
 export interface DreamResult {
   interpretation: string;
-  numbers_2d: string[];
-  numbers_3d: string[];
   numbers_4d: string[];
+  numbers_3d: string[];
+  numbers_2d: string[];
 }
