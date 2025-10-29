@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import * as React from 'react';
 import { interpretDream } from '../services/geminiService';
 import type { DreamResult } from '../types';
 import LoadingSpinner from './LoadingSpinner';
@@ -11,12 +11,12 @@ interface DreamInterpreterProps {
 }
 
 const DreamInterpreter: React.FC<DreamInterpreterProps> = ({ apiKey, openApiKeyModal }) => {
-  const [dream, setDream] = useState('');
-  const [result, setResult] = useState<DreamResult | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [dream, setDream] = React.useState('');
+  const [result, setResult] = React.useState<DreamResult | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const handleInterpret = useCallback(async () => {
+  const handleInterpret = React.useCallback(async () => {
     if (!dream.trim()) {
       setError('Harap masukkan deskripsi mimpi Anda.');
       return;

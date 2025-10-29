@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import type { DreamResult } from '../types';
 
 const NumberGrid: React.FC<{ numbers: string[] }> = ({ numbers }) => (

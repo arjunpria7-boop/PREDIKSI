@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 
 // Define the BeforeInstallPromptEvent interface as it's not standard in all TS lib versions
 interface BeforeInstallPromptEvent extends Event {
@@ -11,9 +11,9 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const InstallPWA: React.FC = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = React.useState<BeforeInstallPromptEvent | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handler = (e: Event) => {
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 import Header from './components/Header';
 import Disclaimer from './components/Disclaimer';
 import PredictionGenerator from './components/PredictionGenerator';
@@ -9,11 +9,11 @@ import ApiKeyForm from './components/ApiKeyForm';
 type Tab = 'prediksi' | 'mimpi';
 
 const App: React.FC = () => {
-  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
-  const [apiKey, setApiKey] = useState('');
-  const [activeTab, setActiveTab] = useState<Tab>('prediksi');
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = React.useState(false);
+  const [apiKey, setApiKey] = React.useState('');
+  const [activeTab, setActiveTab] = React.useState<Tab>('prediksi');
 
-  useEffect(() => {
+  React.useEffect(() => {
     const storedKey = localStorage.getItem('gemini-api-key');
     if (storedKey) {
       setApiKey(storedKey);

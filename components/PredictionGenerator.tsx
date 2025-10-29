@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import * as React from 'react';
 import { generatePrediction } from '../services/geminiService';
 import type { LotteryType, PredictionResult } from '../types';
 import ControlPanel from './ControlPanel';
@@ -12,14 +12,14 @@ interface PredictionGeneratorProps {
 }
 
 const PredictionGenerator: React.FC<PredictionGeneratorProps> = ({ apiKey, openApiKeyModal }) => {
-    const [lotteryType, setLotteryType] = useState<LotteryType>('4D');
-    const [market, setMarket] = useState<string>('HONGKONG');
-    const [prediction, setPrediction] = useState<PredictionResult | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const [lastResult, setLastResult] = useState<string[]>(['', '', '', '']);
+    const [lotteryType, setLotteryType] = React.useState<LotteryType>('4D');
+    const [market, setMarket] = React.useState<string>('HONGKONG');
+    const [prediction, setPrediction] = React.useState<PredictionResult | null>(null);
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [error, setError] = React.useState<string | null>(null);
+    const [lastResult, setLastResult] = React.useState<string[]>(['', '', '', '']);
 
-    const handleGenerate = useCallback(async () => {
+    const handleGenerate = React.useCallback(async () => {
         if (!apiKey) {
             setError("API Key belum diatur. Silakan atur kunci di menu pengaturan.");
             openApiKeyModal();

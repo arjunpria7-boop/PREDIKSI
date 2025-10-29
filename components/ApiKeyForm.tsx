@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 
 interface ApiKeyFormProps {
     currentKey: string;
@@ -7,7 +7,7 @@ interface ApiKeyFormProps {
 }
 
 const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ currentKey, onSave, onCancel }) => {
-    const [apiKey, setApiKey] = useState(currentKey);
+    const [apiKey, setApiKey] = React.useState(currentKey);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

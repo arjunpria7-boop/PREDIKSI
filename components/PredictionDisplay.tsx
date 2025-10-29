@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import type { PredictionResult } from '../types';
 
 interface PredictionDisplayProps {
@@ -38,7 +38,7 @@ const generateMarketColor = (marketName: string): string => {
 
 
 const PredictionDisplay: React.FC<PredictionDisplayProps> = ({ result, market }) => {
-  const [isCopied, setIsCopied] = useState(false);
+  const [isCopied, setIsCopied] = React.useState(false);
   const today = new Date();
   const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
   const formattedDate = new Intl.DateTimeFormat('id-ID', options).format(today);
@@ -50,7 +50,7 @@ const PredictionDisplay: React.FC<PredictionDisplayProps> = ({ result, market })
     const map: { [key: string]: string } = {
         'A':'𝗔','B':'𝗕','C':'𝗖','D':'𝗗','E':'𝗘','F':'𝗙','G':'𝗚','H':'𝗛','I':'𝗜','J':'𝗝','K':'𝗞','L':'𝗟','M':'𝗠',
         'N':'𝗡','O':'𝗢','P':'𝗣','Q':'𝗤','R':'𝗥','S':'𝗦','T':'𝗧','U':'𝗨','V':'𝗩','W':'𝗪','X':'𝗫','Y':'𝗬','Z':'𝗭', ' ':' ',
-        '0':'𝟬', '1':'𝟭', '2':'𝟮', '3':'𝟯', '4':'𝟰', '5':'𝟱', '6':'𝟲', '7':'𝟳', '8':'𝟴', '9':'𝟵'
+        '0':'𝟬', '1':'𝟭', '2':'𝟮', '3':'𝟯', '4':'𝟰', '5':'🀵', '6':'𝟲', '7':'𝟳', '8':'𝟴', '9':'𝟵'
     };
     return name.toUpperCase().split('').map(char => map[char] || char).join('');
   };
@@ -169,13 +169,13 @@ Salam dari 𝗠𝗮𝘀 𝗔𝗥𝗝`;
           <br />
           𝘾𝘽 : {result.cb}
           <br />
-          𝘽𝘽𝙁𝙎 : {result.bbfs}
+          𝘽𝘽𝙁𝙎 : ${result.bbfs}
           <br />
-          4𝘿𝙗𝙗 : {result.bb4d.join(' * ')}
+          4𝘿𝙗𝙗 : ${result.bb4d.join(' * ')}
           <br />
-          3𝘿𝙗𝙗 : {result.bb3d.join(' * ')}
+          3𝘿𝙗𝙗 : ${result.bb3d.join(' * ')}
           <br />
-          2𝘿 : {result.bb2d.join(' * ')}
+          2𝘿 : ${result.bb2d.join(' * ')}
           <br />
           𝚌𝚊𝚍𝚊𝚗𝚐𝚊𝚗 : ${result.bb2dCadangan.join(' * ')}
           <br />
