@@ -6,7 +6,12 @@ import PredictionDisplay from './PredictionDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 
-const PredictionGenerator: React.FC = () => {
+interface PredictionGeneratorProps {
+    apiKey: string;
+    openApiKeyModal: () => void;
+}
+
+const PredictionGenerator: React.FC<PredictionGeneratorProps> = ({ apiKey, openApiKeyModal }) => {
     const [lotteryType, setLotteryType] = useState<LotteryType>('4D');
     const [market, setMarket] = useState<string>('HONGKONG');
     const [prediction, setPrediction] = useState<PredictionResult | null>(null);
@@ -15,12 +20,18 @@ const PredictionGenerator: React.FC = () => {
     const [lastResult, setLastResult] = useState<string[]>(['', '', '', '']);
 
     const handleGenerate = useCallback(async () => {
+        if (!apiKey) {
+            setError("API Key belum diatur. Silakan atur kunci di menu pengaturan.");
+            openApiKeyModal();
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
         setPrediction(null);
 
         try {
-            const result = await generatePrediction(lotteryType, market, lastResult);
+            const result = await generatePrediction(apiKey, lotteryType, market, lastResult);
             setPrediction(result);
         } catch (err: unknown) {
             console.error(err);
@@ -32,7 +43,7 @@ const PredictionGenerator: React.FC = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [lotteryType, market, lastResult]);
+    }, [apiKey, lotteryType, market, lastResult, openApiKeyModal]);
 
 
     return (

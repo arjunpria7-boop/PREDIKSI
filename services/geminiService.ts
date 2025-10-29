@@ -150,8 +150,11 @@ const buildPrompt = (lotteryType: LotteryType, market: string, lastResult?: stri
   Pastikan hasilnya sesuai dengan format JSON yang diminta.`;
 };
 
-export const generatePrediction = async (lotteryType: LotteryType, market: string, lastResult?: string[]): Promise<PredictionResult> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+export const generatePrediction = async (apiKey: string, lotteryType: LotteryType, market: string, lastResult?: string[]): Promise<PredictionResult> => {
+  if (!apiKey) {
+    throw new Error("API Key belum diatur. Silakan atur kunci di menu pengaturan.");
+  }
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
     const response = await ai.models.generateContent({
@@ -174,7 +177,7 @@ export const generatePrediction = async (lotteryType: LotteryType, market: strin
     return result as PredictionResult;
   } catch (error) {
     console.error("Error calling Gemini API:", error);
-    throw new Error("Gagal berkomunikasi dengan AI. Periksa konfigurasi API Key atau coba lagi nanti.");
+    throw new Error("Gagal berkomunikasi dengan AI. Periksa API Key Anda atau coba lagi nanti.");
   }
 };
 
@@ -195,8 +198,11 @@ const buildDreamPrompt = (dream: string): string => {
   Pastikan hasilnya sesuai dengan format JSON yang diminta. Jangan menambahkan penjelasan di luar format JSON.`;
 };
 
-export const interpretDream = async (dream: string): Promise<DreamResult> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+export const interpretDream = async (apiKey: string, dream: string): Promise<DreamResult> => {
+   if (!apiKey) {
+    throw new Error("API Key belum diatur. Silakan atur kunci di menu pengaturan.");
+  }
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
     const response = await ai.models.generateContent({
@@ -219,6 +225,6 @@ export const interpretDream = async (dream: string): Promise<DreamResult> => {
     return result as DreamResult;
   } catch (error) {
     console.error("Error calling Gemini API for dream interpretation:", error);
-    throw new Error("Gagal berkomunikasi dengan AI. Periksa konfigurasi API Key atau coba lagi nanti.");
+    throw new Error("Gagal berkomunikasi dengan AI. Periksa API Key Anda atau coba lagi nanti.");
   }
 };

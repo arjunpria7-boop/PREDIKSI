@@ -5,7 +5,12 @@ import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import DreamResultDisplay from './DreamResultDisplay';
 
-const DreamInterpreter: React.FC = () => {
+interface DreamInterpreterProps {
+    apiKey: string;
+    openApiKeyModal: () => void;
+}
+
+const DreamInterpreter: React.FC<DreamInterpreterProps> = ({ apiKey, openApiKeyModal }) => {
   const [dream, setDream] = useState('');
   const [result, setResult] = useState<DreamResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -16,13 +21,19 @@ const DreamInterpreter: React.FC = () => {
       setError('Harap masukkan deskripsi mimpi Anda.');
       return;
     }
+
+    if (!apiKey) {
+        setError("API Key belum diatur. Silakan atur kunci di menu pengaturan.");
+        openApiKeyModal();
+        return;
+    }
     
     setIsLoading(true);
     setError(null);
     setResult(null);
 
     try {
-      const dreamResult = await interpretDream(dream);
+      const dreamResult = await interpretDream(apiKey, dream);
       setResult(dreamResult);
     } catch (err: unknown) {
       console.error(err);
@@ -34,7 +45,7 @@ const DreamInterpreter: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [dream]);
+  }, [dream, apiKey, openApiKeyModal]);
 
   return (
     <div>
