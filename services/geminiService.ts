@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import type { LotteryType, PredictionResult } from '../types';
+import type { LotteryType, PredictionResult, DreamResult } from '../types';
 
 const predictionSchema = {
   type: Type.OBJECT,
@@ -30,6 +30,32 @@ const predictionSchema = {
     },
   },
   required: ['ai', 'cb', 'cn', 'bbfs', 'bb4d', 'bb3d', 'bb2d', 'bb2dCadangan'],
+};
+
+const dreamInterpretationSchema = {
+  type: Type.OBJECT,
+  properties: {
+    interpretation: { 
+      type: Type.STRING, 
+      description: 'Interpretasi singkat dan menarik dari mimpi dalam bahasa Indonesia, hubungkan dengan angka-angka yang dihasilkan.' 
+    },
+    numbers_2d: {
+      type: Type.ARRAY,
+      description: 'Array berisi TEPAT 5 angka prediksi 2D yang relevan dengan mimpi.',
+      items: { type: Type.STRING },
+    },
+    numbers_3d: {
+      type: Type.ARRAY,
+      description: 'Array berisi TEPAT 4 angka prediksi 3D yang relevan dengan mimpi.',
+      items: { type: Type.STRING },
+    },
+    numbers_4d: {
+      type: Type.ARRAY,
+      description: 'Array berisi TEPAT 3 angka prediksi 4D yang relevan dengan mimpi.',
+      items: { type: Type.STRING },
+    },
+  },
+  required: ['interpretation', 'numbers_2d', 'numbers_3d', 'numbers_4d'],
 };
 
 const TOGEL_FORMULAS = `
@@ -125,12 +151,7 @@ const buildPrompt = (lotteryType: LotteryType, market: string, lastResult?: stri
 };
 
 export const generatePrediction = async (lotteryType: LotteryType, market: string, lastResult?: string[]): Promise<PredictionResult> => {
-  const apiKey = localStorage.getItem('gemini_api_key');
-  if (!apiKey) {
-    throw new Error("API_KEY_NOT_SET");
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   try {
     const response = await ai.models.generateContent({
@@ -146,18 +167,58 @@ export const generatePrediction = async (lotteryType: LotteryType, market: strin
     const jsonText = response.text.trim();
     const result = JSON.parse(jsonText);
     
-    // Basic validation
     if (!result.ai || !result.cb || !result.cn || !result.bbfs || !result.bb4d || !result.bb3d || !result.bb2d || !result.bb2dCadangan) {
-        throw new Error("Invalid response format from AI");
+        throw new Error("Format respons dari AI tidak valid.");
     }
 
     return result as PredictionResult;
   } catch (error) {
     console.error("Error calling Gemini API:", error);
-    // Cek apakah error karena API key tidak valid
-    if (error instanceof Error && error.message.includes('API key not valid')) {
-        throw new Error("INVALID_API_KEY");
+    throw new Error("Gagal berkomunikasi dengan AI. Periksa konfigurasi API Key atau coba lagi nanti.");
+  }
+};
+
+const buildDreamPrompt = (dream: string): string => {
+  return `Anda adalah seorang ahli tafsir mimpi legendaris dari Indonesia yang menguasai ilmu "Erek Erek" dan "Buku Mimpi".
+  Tugas Anda adalah menafsirkan mimpi yang diberikan oleh pengguna dan mengubahnya menjadi angka-angka keberuntungan untuk togel 2D, 3D, and 4D.
+
+  Mimpi Pengguna: "${dream}"
+
+  Lakukan analisis mendalam terhadap simbol-simbol dalam mimpi tersebut. Hubungkan setiap objek, kejadian, atau perasaan dalam mimpi dengan entri yang relevan dalam buku mimpi atau erek-erek.
+
+  Setelah menganalisis, berikan hasil dalam format berikut:
+  1.  **Interpretasi**: Jelaskan makna mimpi secara singkat dan menarik. Kaitkan interpretasi Anda dengan angka-angka yang Anda hasilkan.
+  2.  **Angka 2D**: Berikan TEPAT 5 set angka 2D.
+  3.  **Angka 3D**: Berikan TEPAT 4 set angka 3D.
+  4.  **Angka 4D**: Berikan TEPAT 3 set angka 4D.
+
+  Pastikan hasilnya sesuai dengan format JSON yang diminta. Jangan menambahkan penjelasan di luar format JSON.`;
+};
+
+export const interpretDream = async (dream: string): Promise<DreamResult> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: buildDreamPrompt(dream),
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: dreamInterpretationSchema,
+        temperature: 0.7,
+      }
+    });
+
+    const jsonText = response.text.trim();
+    const result = JSON.parse(jsonText);
+    
+    if (!result.interpretation || !result.numbers_2d || !result.numbers_3d || !result.numbers_4d) {
+        throw new Error("Format respons dari AI untuk tafsir mimpi tidak valid.");
     }
-    throw new Error("Gagal berkomunikasi dengan AI.");
+
+    return result as DreamResult;
+  } catch (error) {
+    console.error("Error calling Gemini API for dream interpretation:", error);
+    throw new Error("Gagal berkomunikasi dengan AI. Periksa konfigurasi API Key atau coba lagi nanti.");
   }
 };
