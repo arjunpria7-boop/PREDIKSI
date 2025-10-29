@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
+// FIX: Import React to provide types for React.FC, hooks, and JSX.
+import React from 'react';
 import { generatePrediction } from './services/geminiService';
 import type { PredictionResult, HistoryItem } from './types';
 import Header from './Header';
@@ -11,17 +12,17 @@ import HistoryPanel from './components/HistoryPanel';
 import Modal from './components/Modal';
 
 const App: React.FC = () => {
-  const [market, setMarket] = useState<string>('HONGKONG');
-  const [prediction, setPrediction] = useState<PredictionResult | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [lastResult, setLastResult] = useState<string[]>(['', '', '', '']);
+  const [market, setMarket] = React.useState<string>('HONGKONG');
+  const [prediction, setPrediction] = React.useState<PredictionResult | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [lastResult, setLastResult] = React.useState<string[]>(['', '', '', '']);
   
-  const [predictionHistory, setPredictionHistory] = useState<HistoryItem[]>([]);
-  const [selectedHistory, setSelectedHistory] = useState<HistoryItem | null>(null);
-  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [predictionHistory, setPredictionHistory] = React.useState<HistoryItem[]>([]);
+  const [selectedHistory, setSelectedHistory] = React.useState<HistoryItem | null>(null);
+  const [apiKey, setApiKey] = React.useState<string | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     try {
       const storedApiKey = localStorage.getItem('gemini_api_key');
       if (storedApiKey) {
@@ -37,7 +38,7 @@ const App: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     try {
         localStorage.setItem('predictionHistory', JSON.stringify(predictionHistory));
     } catch (e) {
@@ -75,7 +76,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleGenerate = useCallback(async () => {
+  const handleGenerate = React.useCallback(async () => {
     if (!apiKey) {
       setError('API Key tidak ditemukan. Silakan atur melalui ikon kunci di bawah.');
       return;

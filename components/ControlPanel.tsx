@@ -1,3 +1,4 @@
+// FIX: Import React to provide types for React.FC and JSX.
 import React from 'react';
 import HistoryInput from './HistoryInput';
 

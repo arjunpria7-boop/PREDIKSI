@@ -1,5 +1,5 @@
-
-import React, { useEffect } from 'react';
+// FIX: Import React to provide types for React.FC, hooks, and JSX.
+import React from 'react';
 
 interface ModalProps {
   onClose: () => void;
@@ -7,7 +7,7 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
-  useEffect(() => {
+  React.useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();

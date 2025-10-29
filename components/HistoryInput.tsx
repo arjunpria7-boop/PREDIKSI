@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+// FIX: Import React to provide types for React.FC, hooks, and JSX.
+import React from 'react';
 
 interface HistoryInputProps {
   value: string[];
@@ -6,7 +7,7 @@ interface HistoryInputProps {
 }
 
 const HistoryInput: React.FC<HistoryInputProps> = ({ value, onChange }) => {
-  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const inputsRef = React.useRef<(HTMLInputElement | null)[]>([]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newChar = e.target.value.slice(-1);
